@@ -226,14 +226,15 @@ export function addSwiftGoogleCastAppDelegateDidFinishLaunchingWithOptions(
 
   newSrc = newSrc.filter(Boolean)
 
-  // For better reliability, let's look for any appearance of "self.moduleName" which is common in
-  // Swift Expo AppDelegates
+  // For better reliability, match the return statement in didFinishLaunchingWithOptions in Swift AppDelegate
+  // This works with new Expo/React Native Swift templates (RN 0.72+)
   return mergeContents({
     tag: 'react-native-google-cast-didFinishLaunchingWithOptions',
     src,
     newSrc: newSrc.join('\n'),
-    anchor: /self\.moduleName/,
-    offset: -1, // Insert right before this line
+    // Insert right before the return super.application... line in didFinishLaunchingWithOptions
+    anchor: /return\s+super\.application\(application,\s*didFinishLaunchingWithOptions:\s*launchOptions\)/,
+    offset: 0, // Insert before the return line
     comment: '//',
   })
 }
