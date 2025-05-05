@@ -4,7 +4,7 @@ import {
   withAppDelegate,
   withInfoPlist,
 } from '@expo/config-plugins'
-
+import { insertContentsInsideSwiftFunctionBlock } from '@expo/config-plugins/build/ios/codeMod'
 const LOCAL_NETWORK_USAGE =
   '${PRODUCT_NAME} uses the local network to discover Cast-enabled devices on your WiFi network'
 
@@ -61,7 +61,7 @@ const withIosAppDelegateLoaded: ConfigPlugin<IosProps> = (config, props) => {
         addSwiftGoogleCastAppDelegateDidFinishLaunchingWithOptions(
           config_.modResults.contents,
           props
-        ).contents
+        )
       config_.modResults.contents = addSwiftGoogleCastAppDelegateImport(
         config_.modResults.contents
       ).contents
@@ -226,15 +226,10 @@ export function addSwiftGoogleCastAppDelegateDidFinishLaunchingWithOptions(
 
   newSrc = newSrc.filter(Boolean)
 
-  // For better reliability, match the return statement in didFinishLaunchingWithOptions in Swift AppDelegate
-  // This works with new Expo/React Native Swift templates (RN 0.72+)
-  return mergeContents({
-    tag: 'react-native-google-cast-didFinishLaunchingWithOptions',
+  return insertContentsInsideSwiftFunctionBlock(
     src,
-    newSrc: newSrc.join('\n'),
-    // Insert right before the return super.application... line in didFinishLaunchingWithOptions
-    anchor: /return\s+super\.application\(application,\s*didFinishLaunchingWithOptions:\s*launchOptions\)/,
-    offset: 0, // Insert before the return line
-    comment: '//',
-  })
+    'application didFinishLaunchingWithOptions:',
+    newSrc.join('\n'),
+    { position: 'tailBeforeLastReturn' }
+  )
 }
