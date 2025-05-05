@@ -7,7 +7,6 @@ export declare const withIosGoogleCast: ConfigPlugin<{
     suspendSessionsWhenBackgrounded?: boolean;
 }>;
 export declare const MATCH_INIT: RegExp;
-export declare const MATCH_SWIFT_INIT: RegExp;
 type IosProps = {
     disableDiscoveryAutostart?: boolean;
     expandedController?: boolean;
