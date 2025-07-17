@@ -218,9 +218,11 @@ export function addSwiftGoogleCastAppDelegateDidFinishLaunchingWithOptions(
 
   newSrc = newSrc.filter(Boolean)
 
+  // Hotfix based on:
+  // https://github.com/react-native-google-cast/react-native-google-cast/issues/560#issuecomment-2893544218
   return insertContentsInsideSwiftFunctionBlock(
     src,
-    'application didFinishLaunchingWithOptions:',
+    'application(_:didFinishLaunchingWithOptions:)',
     newSrc.join('\n'),
     { position: 'tailBeforeLastReturn' }
   )
